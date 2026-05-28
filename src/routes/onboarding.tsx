@@ -118,7 +118,7 @@ function Onboarding() {
   const [submitting, setSubmitting] = useState(false);
   const runAssess = useServerFn(generateAssessment);
 
-  useEffect(() => { if (!loading && !user) navigate({ to: "/auth", replace: true }); }, [user, loading, navigate]);
+  useEffect(() => { if (!loading && !user) navigate({ to: "/login", replace: true }); }, [user, loading, navigate]);
 
   // hydrate existing draft
   useEffect(() => {
@@ -126,7 +126,7 @@ function Onboarding() {
     supabase.from("athlete_profiles").select("*").eq("user_id", user.id).maybeSingle()
       .then(({ data: p }) => {
         if (p) {
-          if (p.onboarding_complete) { navigate({ to: "/dashboard", replace: true }); return; }
+          if (p.onboarding_complete) { navigate({ to: "/chat", replace: true }); return; }
           setData(p);
         }
       });
@@ -159,7 +159,7 @@ function Onboarding() {
 
       toast.message("Building your assessment...");
       await runAssess({ data: { athleteId: athleteId! } });
-      navigate({ to: "/dashboard", replace: true });
+      navigate({ to: "/chat", replace: true });
     } catch (e: any) {
       toast.error(e.message ?? "Failed");
     } finally {
