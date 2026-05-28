@@ -12,7 +12,7 @@ export const Route = createFileRoute("/onboarding")({
   component: Onboarding,
 });
 
-type Field = {
+type FieldDef = {
   key: string;
   label: string;
   type?: "text" | "textarea" | "number" | "select" | "bool" | "url";
@@ -20,7 +20,7 @@ type Field = {
   placeholder?: string;
 };
 
-const STEPS: { title: string; subtitle: string; fields: Field[] }[] = [
+const STEPS: { title: string; subtitle: string; fields: FieldDef[] }[] = [
   {
     title: "Who you are",
     subtitle: "The basics. Quick.",
@@ -76,7 +76,7 @@ const STEPS: { title: string; subtitle: string; fields: Field[] }[] = [
   },
 ];
 
-function Field({ f, value, onChange }: { f: Field; value: any; onChange: (v: any) => void }) {
+function FieldInput({ f, value, onChange }: { f: FieldDef; value: any; onChange: (v: any) => void }) {
   const base = "w-full rounded-md border border-border bg-card px-4 py-3 text-foreground outline-none focus:border-primary";
   if (f.type === "textarea")
     return <textarea rows={3} value={value ?? ""} onChange={(e) => onChange(e.target.value)} className={base} />;
@@ -188,7 +188,7 @@ function Onboarding() {
           {current.fields.map((f) => (
             <div key={f.key}>
               <label className="label-mono mb-2 block">{f.label}</label>
-              <Field f={f} value={(data as any)[f.key]} onChange={(v) => setField(f.key, v)} />
+              <FieldInput f={f} value={(data as any)[f.key]} onChange={(v) => setField(f.key, v)} />
             </div>
           ))}
         </div>
