@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Logo, GoldLine } from "@/components/brand";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -13,60 +12,43 @@ export const Route = createFileRoute("/")({
 
 function Landing() {
   return (
-    <div className="min-h-screen bg-background">
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-6">
-        <Logo />
-        <Link to="/auth" className="label-mono hover:text-foreground transition-colors">
-          Sign in
-        </Link>
-      </header>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-5">
+      <div className="flex flex-col items-center text-center">
+        {/* Logo */}
+        <div className="flex items-baseline gap-[3px] font-display text-6xl tracking-wide sm:text-7xl">
+          <span className="text-foreground">athlet</span>
+          <span className="text-primary">IQ</span>
+        </div>
 
-      <main className="mx-auto max-w-3xl px-5 pt-16 pb-24 sm:pt-28">
-        <p className="label-mono mb-6 text-primary">Built for college athletes</p>
-        <h1 className="font-display text-5xl leading-[0.95] text-foreground sm:text-7xl">
-          Life after the game,<br />
-          <span className="text-primary">on your terms.</span>
-        </h1>
-        <p className="mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
-          athletIQ is your AI career readiness agent. We translate what you've built on the field
-          into the resume, network, and clarity you need off it.
+        {/* Gold line */}
+        <div className="mt-6 h-[1px] w-[120px] bg-primary" />
+
+        {/* Headline */}
+        <p className="mt-8 font-sans text-lg text-muted-foreground">
+          The Career Readiness Agent for College Athletes
         </p>
 
-        <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-          <Link
-            to="/auth"
-            className="inline-flex h-12 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium tracking-wide text-primary-foreground transition-colors hover:bg-primary-hover"
-          >
-            Start your assessment
+        {/* CTA */}
+        <Link
+          to="/signup"
+          className="mt-10 inline-flex h-12 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium tracking-wide text-primary-foreground transition-colors hover:bg-primary-hover"
+        >
+          Start Your Assessment →
+        </Link>
+
+        {/* Login link */}
+        <p className="mt-4 text-sm text-muted-foreground">
+          Already have an account?{" "}
+          <Link to="/login" className="text-primary underline underline-offset-4 hover:text-primary-hover">
+            Log in
           </Link>
-          <Link
-            to="/auth"
-            className="inline-flex h-12 items-center justify-center rounded-md border border-border px-8 text-sm text-foreground transition-colors hover:border-primary hover:text-primary"
-          >
-            I already have an account
-          </Link>
-        </div>
+        </p>
+      </div>
 
-        <div className="mt-24"><GoldLine /></div>
-
-        <div className="mt-16 grid gap-10 sm:grid-cols-3">
-          {[
-            ["01", "Assess", "A focused intake. We learn your sport, your story, your fears, your goals."],
-            ["02", "Translate", "Your athletic identity becomes a strengths profile employers understand."],
-            ["03", "Move", "A weekly mission and an always-on coach. No more guessing what's next."],
-          ].map(([n, t, d]) => (
-            <div key={n}>
-              <div className="font-mono text-xs text-primary">{n}</div>
-              <h3 className="mt-3 font-display text-2xl">{t}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{d}</p>
-            </div>
-          ))}
-        </div>
-      </main>
-
-      <footer className="mx-auto max-w-6xl px-5 py-10 label-mono">
-        © athletIQ
-      </footer>
+      {/* Footer */}
+      <div className="absolute bottom-6 font-mono text-[10px] tracking-widest text-muted-foreground">
+        Intelligence. Elevation. Legacy. · athq.tech
+      </div>
     </div>
   );
 }
