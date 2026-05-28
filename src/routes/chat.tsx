@@ -1,22 +1,22 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Logo, GoldLine } from "@/components/brand";
+import { Logo } from "@/components/brand";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useServerFn } from "@tanstack/react-start";
 import { chatWithCoach } from "@/lib/ai.functions";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — athletIQ" }, { name: "description", content: "Your assessment, coach, and weekly mission." }] }),
-  component: Dashboard,
+export const Route = createFileRoute("/chat")({
+  head: () => ({ meta: [{ title: "Coach — athletIQ" }, { name: "description", content: "Your assessment, coach, and weekly mission." }] }),
+  component: ChatPage,
 });
 
 type Profile = any;
 type Assess = any;
 type Msg = { role: "user" | "assistant"; content: string; id?: string };
 
-function Dashboard() {
+function ChatPage() {
   const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -27,7 +27,7 @@ function Dashboard() {
   const send = useServerFn(chatWithCoach);
   const endRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { if (!loading && !user) navigate({ to: "/auth", replace: true }); }, [user, loading, navigate]);
+  useEffect(() => { if (!loading && !user) navigate({ to: "/login", replace: true }); }, [user, loading, navigate]);
 
   useEffect(() => {
     if (!user) return;
