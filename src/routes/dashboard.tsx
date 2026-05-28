@@ -27,7 +27,7 @@ function Dashboard() {
   const send = useServerFn(chatWithCoach);
   const endRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { if (!loading && !user) navigate({ to: "/auth", replace: true }); }, [user, loading, navigate]);
+  useEffect(() => { if (!loading && !user) navigate({ to: "/login", replace: true }); }, [user, loading, navigate]);
 
   useEffect(() => {
     if (!user) return;
