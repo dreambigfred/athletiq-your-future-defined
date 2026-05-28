@@ -118,7 +118,7 @@ function Onboarding() {
   const [submitting, setSubmitting] = useState(false);
   const runAssess = useServerFn(generateAssessment);
 
-  useEffect(() => { if (!loading && !user) navigate({ to: "/login", replace: true }); }, [user, loading, navigate]);
+  useEffect(() => { if (!loading && !user) navigate({ to: "/auth", replace: true }); }, [user, loading, navigate]);
 
   // hydrate existing draft
   useEffect(() => {
