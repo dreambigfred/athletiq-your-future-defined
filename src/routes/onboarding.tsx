@@ -196,7 +196,7 @@ function Onboarding() {
   const progress = Math.round(((stepIdx + 1) / visible.length) * 100);
 
   // Initialize draft when question changes
-  const lastQid = useRef<string | undefined>();
+  const lastQid = useRef<string | undefined>(undefined);
   useEffect(() => {
     if (!current) return;
     if (lastQid.current === current.id) return;
@@ -234,7 +234,7 @@ function Onboarding() {
         id = ins!.id;
         setAthleteId(id);
       } else {
-        const { error } = await supabase.from("athlete_profiles").update(patch).eq("id", id);
+        const { error } = await supabase.from("athlete_profiles").update(patch as any).eq("id", id);
         if (error) throw error;
       }
       setData(next);
