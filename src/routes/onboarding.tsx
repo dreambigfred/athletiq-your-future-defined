@@ -227,7 +227,7 @@ function Onboarding() {
       if (!id) {
         const { data: ins, error } = await supabase
           .from("athlete_profiles")
-          .insert({ user_id: user.id, ...patch })
+          .insert({ user_id: user.id, ...patch } as any)
           .select("id")
           .single();
         if (error) throw error;
