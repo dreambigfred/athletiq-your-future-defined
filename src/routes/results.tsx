@@ -1,13 +1,39 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Logo } from "@/components/brand";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/results")({
-  head: () => ({ meta: [{ title: "Your Assessment — athletIQ" }] }),
+  head: () => ({ meta: [{ title: "Your Athlete Profile — athletIQ" }] }),
   component: Results,
 });
+
+function splitLines(text?: string | null): string[] {
+  if (!text) return [];
+  return text
+    .split(/\r?\n|•|\u2022|;|(?:^|\n)\s*\d+[\.\)]\s+/g)
+    .map((s) => s.replace(/^[-*◆→□\s]+/, "").trim())
+    .filter(Boolean);
+}
+
+function Reveal({ delay, children }: { delay: number; children: React.ReactNode }) {
+  return (
+    <section
+      className="opacity-0 animate-[fadeUp_700ms_ease-out_forwards]"
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      {children}
+    </section>
+  );
+}
+
+function Label({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="label-mono text-primary" style={{ color: "var(--primary)" }}>
+      {children}
+    </p>
+  );
+}
 
 function Results() {
   const { user, loading } = useAuth();
@@ -15,6 +41,7 @@ function Results() {
   const [result, setResult] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [ready, setReady] = useState(false);
+  const [checked, setChecked] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/login", replace: true });
@@ -45,75 +72,160 @@ function Results() {
     })();
   }, [user, navigate]);
 
+  const strengths = useMemo(() => splitLines(result?.top_strengths).slice(0, 4), [result]);
+  const careers = useMemo(() => splitLines(result?.suggested_career_paths).slice(0, 4), [result]);
+  const mission = useMemo(() => splitLines(result?.weekly_mission).slice(0, 3), [result]);
+  const skills = useMemo(() => splitLines(result?.recommended_skills).slice(0, 4), [result]);
+
   if (!ready) return <div className="min-h-screen bg-background" />;
 
   const score = result?.transition_readiness_score ?? 0;
+  const showNil = profile?.has_nil_or_volunteer && profile.has_nil_or_volunteer !== "none" && result?.nil_volunteer_translations;
 
   return (
-    <div className="min-h-screen bg-background px-6 py-10">
-      <header className="mx-auto flex max-w-3xl items-center justify-between">
-        <Logo />
-        <Link to="/chat" className="label-mono text-primary hover:text-primary-hover">
-          Open coach →
-        </Link>
-      </header>
+    <div className="min-h-screen bg-background px-6 py-12">
+      <style>{`
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(16px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
 
-      <main className="mx-auto mt-16 max-w-3xl space-y-12">
-        <section>
-          <p className="label-mono text-primary">Your archetype</p>
-          <h1 className="mt-2 font-display text-5xl text-foreground">
+      <div className="mx-auto max-w-2xl space-y-14">
+        {/* A — Header */}
+        <Reveal delay={0}>
+          <Label>Your Athlete Profile</Label>
+          <div className="mt-3 gold-line" />
+        </Reveal>
+
+        {/* B — Archetype */}
+        <Reveal delay={300}>
+          <Label>Athlete Archetype</Label>
+          <h1 className="mt-3 font-display text-5xl leading-tight text-foreground">
             {result?.archetype ?? "—"}
           </h1>
-          <p className="mt-4 text-lg text-muted-foreground">
+          <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
             {result?.archetype_description}
           </p>
-        </section>
+        </Reveal>
 
-        <section className="rounded-xl border border-border bg-card p-8">
-          <p className="label-mono text-muted-foreground">Transition Readiness</p>
-          <div className="mt-2 flex items-baseline gap-3">
-            <span className="font-display text-7xl text-primary">{score}</span>
-            <span className="text-2xl text-muted-foreground">/ 100</span>
-          </div>
-          <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-border">
-            <div className="h-full bg-primary transition-all" style={{ width: `${score}%` }} />
-          </div>
-          <p className="mt-4 text-muted-foreground">{result?.score_summary}</p>
-        </section>
+        {/* C — Strengths */}
+        <Reveal delay={600}>
+          <Label>Your Strengths</Label>
+          <ul className="mt-4 space-y-3">
+            {strengths.map((s, i) => (
+              <li key={i} className="flex gap-3 text-foreground">
+                <span className="text-primary mt-[2px]">◆</span>
+                <span className="text-[15px] leading-relaxed">{s}</span>
+              </li>
+            ))}
+          </ul>
+        </Reveal>
 
-        <Block label="Top strengths" body={result?.top_strengths} />
-        <Block label="Suggested career paths" body={result?.suggested_career_paths} />
-        <Block label="Recommended skills" body={result?.recommended_skills} />
-        {result?.nil_volunteer_translations && (
-          <Block label="NIL / volunteer translation" body={result.nil_volunteer_translations} />
+        {/* D — Score */}
+        <Reveal delay={900}>
+          <Label>Transition Readiness Score</Label>
+          <div className="mt-4 flex items-baseline gap-3">
+            <span className="font-display text-8xl leading-none text-primary">{score}</span>
+            <span className="font-mono text-lg text-muted-foreground">/ 100</span>
+          </div>
+          <div className="mt-5 h-[2px] w-full overflow-hidden bg-border">
+            <div
+              className="h-full bg-primary transition-all duration-1000"
+              style={{ width: `${score}%` }}
+            />
+          </div>
+          <p className="mt-5 text-[15px] leading-relaxed text-muted-foreground">
+            {result?.score_summary}
+          </p>
+        </Reveal>
+
+        {/* E — Career paths */}
+        <Reveal delay={1200}>
+          <Label>Your Top Career Paths</Label>
+          <ul className="mt-4 space-y-3">
+            {careers.map((c, i) => (
+              <li key={i} className="flex gap-3 text-foreground">
+                <span className="text-primary">→</span>
+                <span className="text-[15px] leading-relaxed">{c}</span>
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+
+        {/* F — Weekly mission */}
+        <Reveal delay={1500}>
+          <Label>Your First Week</Label>
+          <ul className="mt-4 space-y-3">
+            {mission.map((m, i) => {
+              const isChecked = !!checked[i];
+              return (
+                <li key={i}>
+                  <button
+                    onClick={() => setChecked((c) => ({ ...c, [i]: !c[i] }))}
+                    className="flex w-full items-start gap-3 text-left group"
+                  >
+                    <span
+                      className={`mt-[2px] inline-flex h-5 w-5 shrink-0 items-center justify-center border text-xs transition-colors ${
+                        isChecked
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-primary text-transparent group-hover:bg-primary/10"
+                      }`}
+                    >
+                      ✓
+                    </span>
+                    <span
+                      className={`text-[15px] leading-relaxed transition-colors ${
+                        isChecked ? "text-muted-foreground line-through" : "text-foreground"
+                      }`}
+                    >
+                      {m}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </Reveal>
+
+        {/* G — Skills */}
+        <Reveal delay={1800}>
+          <Label>Skills to Build</Label>
+          <ul className="mt-4 space-y-3">
+            {skills.map((s, i) => (
+              <li key={i} className="flex gap-3 text-foreground">
+                <span className="text-primary">→</span>
+                <span className="text-[15px] leading-relaxed">{s}</span>
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+
+        {/* H — NIL/volunteer */}
+        {showNil && (
+          <Reveal delay={2100}>
+            <Label>Your Experience, Translated</Label>
+            <p className="mt-4 whitespace-pre-line text-[15px] leading-relaxed text-foreground">
+              {result.nil_volunteer_translations}
+            </p>
+          </Reveal>
         )}
 
-        <section className="rounded-xl border border-primary/40 bg-primary/5 p-8">
-          <p className="label-mono text-primary">This week's mission</p>
-          <p className="mt-3 font-display text-2xl text-foreground">
-            {result?.weekly_mission}
-          </p>
-        </section>
-
-        <div className="pt-4">
-          <Link
-            to="/chat"
-            className="inline-block h-12 rounded-md bg-primary px-8 leading-[3rem] font-medium text-primary-foreground hover:bg-primary-hover"
-          >
-            Talk to your coach
-          </Link>
-        </div>
-      </main>
+        {/* I — CTA */}
+        <Reveal delay={showNil ? 2400 : 2100}>
+          <div className="pt-4 text-center">
+            <button
+              onClick={() => navigate({ to: "/chat" })}
+              className="inline-flex h-14 items-center justify-center rounded-md bg-primary px-10 font-medium text-primary-foreground transition-colors hover:bg-primary-hover"
+            >
+              Talk To Your Agent →
+            </button>
+            <p className="mt-4 text-sm text-muted-foreground">
+              Your agent already knows who you are.
+            </p>
+          </div>
+        </Reveal>
+      </div>
     </div>
-  );
-}
-
-function Block({ label, body }: { label: string; body?: string | null }) {
-  if (!body) return null;
-  return (
-    <section>
-      <p className="label-mono text-muted-foreground">{label}</p>
-      <p className="mt-2 whitespace-pre-line text-lg text-foreground">{body}</p>
-    </section>
   );
 }
