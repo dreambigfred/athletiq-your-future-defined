@@ -175,32 +175,28 @@ function Results() {
         {/* F — Weekly mission */}
         <Reveal delay={1500}>
           <Label>Your First Week</Label>
-          <ul className="mt-4 space-y-3">
+          <ul className="mt-4 space-y-4">
             {mission.map((m, i) => {
               const isChecked = !!checked[i];
+              const id = `mission-${i}`;
               return (
-                <li key={i}>
-                  <button
-                    onClick={() => setChecked((c) => ({ ...c, [i]: !c[i] }))}
-                    className="flex w-full items-start gap-3 text-left group"
+                <li key={i} className="flex items-start gap-4">
+                  <Checkbox
+                    id={id}
+                    checked={isChecked}
+                    onCheckedChange={() =>
+                      setChecked((c) => ({ ...c, [i]: !c[i] }))
+                    }
+                    className="mt-[3px] h-5 w-5 shrink-0 rounded-sm"
+                  />
+                  <label
+                    htmlFor={id}
+                    className={`flex-1 cursor-pointer text-[15px] leading-relaxed transition-colors ${
+                      isChecked ? "text-muted-foreground line-through" : "text-foreground"
+                    }`}
                   >
-                    <span
-                      className={`mt-[2px] inline-flex h-5 w-5 shrink-0 items-center justify-center border text-xs transition-colors ${
-                        isChecked
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-primary text-transparent group-hover:bg-primary/10"
-                      }`}
-                    >
-                      ✓
-                    </span>
-                    <span
-                      className={`text-[15px] leading-relaxed transition-colors ${
-                        isChecked ? "text-muted-foreground line-through" : "text-foreground"
-                      }`}
-                    >
-                      {m}
-                    </span>
-                  </button>
+                    {m}
+                  </label>
                 </li>
               );
             })}
