@@ -187,7 +187,7 @@ function Results() {
                     onCheckedChange={() =>
                       setChecked((c) => ({ ...c, [i]: !c[i] }))
                     }
-                    className="mt-[3px] h-5 w-5 shrink-0 rounded-sm"
+                    className="mt-[5px] h-5 w-5 shrink-0 rounded-sm border-primary"
                   />
                   <label
                     htmlFor={id}
