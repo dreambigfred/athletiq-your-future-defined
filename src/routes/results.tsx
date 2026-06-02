@@ -10,9 +10,27 @@ export const Route = createFileRoute("/results")({
 
 function splitLines(text?: string | null): string[] {
   if (!text) return [];
-  return text
-    .split(/\r?\n|•|\u2022|;|(?:^|\n)\s*\d+[\.\)]\s+/g)
-    .map((s) => s.replace(/^[-*◆→□\s]+/, "").trim())
+  // First split on hard separators (newlines, bullets, semicolons, numbered lists)
+  const chunks = text.split(/\r?\n|•|\u2022|;|(?:^|\n)\s*\d+[\.\)]\s+/g);
+  const out: string[] = [];
+  for (const chunk of chunks) {
+    // Then split on top-level commas (ignore commas inside parentheses)
+    let depth = 0;
+    let buf = "";
+    for (const ch of chunk) {
+      if (ch === "(" || ch === "[") depth++;
+      else if (ch === ")" || ch === "]") depth = Math.max(0, depth - 1);
+      if (ch === "," && depth === 0) {
+        out.push(buf);
+        buf = "";
+      } else {
+        buf += ch;
+      }
+    }
+    out.push(buf);
+  }
+  return out
+    .map((s) => s.replace(/^[-*◆→□✓\s]+/, "").trim())
     .filter(Boolean);
 }
 
