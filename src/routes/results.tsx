@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export const Route = createFileRoute("/results")({
   head: () => ({ meta: [{ title: "Your Athlete Profile — athletIQ" }] }),
@@ -10,9 +11,27 @@ export const Route = createFileRoute("/results")({
 
 function splitLines(text?: string | null): string[] {
   if (!text) return [];
-  return text
-    .split(/\r?\n|•|\u2022|;|(?:^|\n)\s*\d+[\.\)]\s+/g)
-    .map((s) => s.replace(/^[-*◆→□\s]+/, "").trim())
+  // First split on hard separators (newlines, bullets, semicolons, numbered lists)
+  const chunks = text.split(/\r?\n|•|\u2022|;|(?:^|\n)\s*\d+[\.\)]\s+/g);
+  const out: string[] = [];
+  for (const chunk of chunks) {
+    // Then split on top-level commas (ignore commas inside parentheses)
+    let depth = 0;
+    let buf = "";
+    for (const ch of chunk) {
+      if (ch === "(" || ch === "[") depth++;
+      else if (ch === ")" || ch === "]") depth = Math.max(0, depth - 1);
+      if (ch === "," && depth === 0) {
+        out.push(buf);
+        buf = "";
+      } else {
+        buf += ch;
+      }
+    }
+    out.push(buf);
+  }
+  return out
+    .map((s) => s.replace(/^[-*◆→□✓\s]+/, "").trim())
     .filter(Boolean);
 }
 
@@ -114,9 +133,9 @@ function Results() {
           <Label>Your Strengths</Label>
           <ul className="mt-4 space-y-3">
             {strengths.map((s, i) => (
-              <li key={i} className="flex gap-3 text-foreground">
-                <span className="text-primary mt-[2px]">◆</span>
-                <span className="text-[15px] leading-relaxed">{s}</span>
+              <li key={i} className="flex items-start gap-4 text-foreground">
+                <span className="text-primary mt-[2px] shrink-0">◆</span>
+                <span className="flex-1 text-[15px] leading-relaxed">{s}</span>
               </li>
             ))}
           </ul>
@@ -145,9 +164,9 @@ function Results() {
           <Label>Your Top Career Paths</Label>
           <ul className="mt-4 space-y-3">
             {careers.map((c, i) => (
-              <li key={i} className="flex gap-3 text-foreground">
-                <span className="text-primary">→</span>
-                <span className="text-[15px] leading-relaxed">{c}</span>
+              <li key={i} className="flex items-start gap-4 text-foreground">
+                <span className="text-primary mt-[2px] shrink-0">→</span>
+                <span className="flex-1 text-[15px] leading-relaxed">{c}</span>
               </li>
             ))}
           </ul>
@@ -156,32 +175,28 @@ function Results() {
         {/* F — Weekly mission */}
         <Reveal delay={1500}>
           <Label>Your First Week</Label>
-          <ul className="mt-4 space-y-3">
+          <ul className="mt-4 space-y-4">
             {mission.map((m, i) => {
               const isChecked = !!checked[i];
+              const id = `mission-${i}`;
               return (
-                <li key={i}>
-                  <button
-                    onClick={() => setChecked((c) => ({ ...c, [i]: !c[i] }))}
-                    className="flex w-full items-start gap-3 text-left group"
+                <li key={i} className="flex items-start gap-4">
+                  <Checkbox
+                    id={id}
+                    checked={isChecked}
+                    onCheckedChange={() =>
+                      setChecked((c) => ({ ...c, [i]: !c[i] }))
+                    }
+                    className="mt-[3px] h-5 w-5 shrink-0 rounded-sm"
+                  />
+                  <label
+                    htmlFor={id}
+                    className={`flex-1 cursor-pointer text-[15px] leading-relaxed transition-colors ${
+                      isChecked ? "text-muted-foreground line-through" : "text-foreground"
+                    }`}
                   >
-                    <span
-                      className={`mt-[2px] inline-flex h-5 w-5 shrink-0 items-center justify-center border text-xs transition-colors ${
-                        isChecked
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-primary text-transparent group-hover:bg-primary/10"
-                      }`}
-                    >
-                      ✓
-                    </span>
-                    <span
-                      className={`text-[15px] leading-relaxed transition-colors ${
-                        isChecked ? "text-muted-foreground line-through" : "text-foreground"
-                      }`}
-                    >
-                      {m}
-                    </span>
-                  </button>
+                    {m}
+                  </label>
                 </li>
               );
             })}
@@ -193,9 +208,9 @@ function Results() {
           <Label>Skills to Build</Label>
           <ul className="mt-4 space-y-3">
             {skills.map((s, i) => (
-              <li key={i} className="flex gap-3 text-foreground">
-                <span className="text-primary">→</span>
-                <span className="text-[15px] leading-relaxed">{s}</span>
+              <li key={i} className="flex items-start gap-4 text-foreground">
+                <span className="text-primary mt-[2px] shrink-0">→</span>
+                <span className="flex-1 text-[15px] leading-relaxed">{s}</span>
               </li>
             ))}
           </ul>
