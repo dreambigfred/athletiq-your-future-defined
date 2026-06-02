@@ -133,9 +133,9 @@ function Results() {
           <Label>Your Strengths</Label>
           <ul className="mt-4 space-y-3">
             {strengths.map((s, i) => (
-              <li key={i} className="flex gap-3 text-foreground">
-                <span className="text-primary mt-[2px]">◆</span>
-                <span className="text-[15px] leading-relaxed">{s}</span>
+              <li key={i} className="flex items-start gap-4 text-foreground">
+                <span className="text-primary mt-[2px] shrink-0">◆</span>
+                <span className="flex-1 text-[15px] leading-relaxed">{s}</span>
               </li>
             ))}
           </ul>
