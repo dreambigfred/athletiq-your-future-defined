@@ -69,11 +69,17 @@ export type Database = {
       }
       athlete_profiles: {
         Row: {
+          academic_major: string | null
           athlete_archetype: string | null
+          biggest_career_concern: string | null
+          career_interest_areas: string | null
           career_interests: string | null
+          class_year: string | null
           confidence_strengths: string | null
           connection_outside_team: string | null
           created_at: string | null
+          division: string | null
+          dream_role_industry: string | null
           graduation_year: number | null
           hardest_emotionally: string | null
           has_linkedin: boolean | null
@@ -82,31 +88,44 @@ export type Database = {
           has_resume: boolean | null
           id: string
           industry_interests: string | null
+          instagram_handle: string | null
           interests_outside_sport: string | null
+          leadership_roles: string | null
           linkedin_url: string | null
           motivation: string | null
           name: string | null
           nil_volunteer_description: string | null
           onboarding_complete: boolean | null
+          position_role: string | null
           post_sport_fear: string | null
+          preferred_communication_style: string | null
+          pro_career_goal: string | null
           school: string | null
           sport: string | null
           strength_profile: string | null
           stress_level: string | null
           structure_without_sport: string | null
+          success_in_6_months: string | null
           suggested_career_paths: string | null
           time_management_style: string | null
           transition_readiness_score: number | null
           user_id: string
+          work_internship_experience: string | null
           work_style: string | null
           year_in_school: string | null
         }
         Insert: {
+          academic_major?: string | null
           athlete_archetype?: string | null
+          biggest_career_concern?: string | null
+          career_interest_areas?: string | null
           career_interests?: string | null
+          class_year?: string | null
           confidence_strengths?: string | null
           connection_outside_team?: string | null
           created_at?: string | null
+          division?: string | null
+          dream_role_industry?: string | null
           graduation_year?: number | null
           hardest_emotionally?: string | null
           has_linkedin?: boolean | null
@@ -115,31 +134,44 @@ export type Database = {
           has_resume?: boolean | null
           id?: string
           industry_interests?: string | null
+          instagram_handle?: string | null
           interests_outside_sport?: string | null
+          leadership_roles?: string | null
           linkedin_url?: string | null
           motivation?: string | null
           name?: string | null
           nil_volunteer_description?: string | null
           onboarding_complete?: boolean | null
+          position_role?: string | null
           post_sport_fear?: string | null
+          preferred_communication_style?: string | null
+          pro_career_goal?: string | null
           school?: string | null
           sport?: string | null
           strength_profile?: string | null
           stress_level?: string | null
           structure_without_sport?: string | null
+          success_in_6_months?: string | null
           suggested_career_paths?: string | null
           time_management_style?: string | null
           transition_readiness_score?: number | null
           user_id: string
+          work_internship_experience?: string | null
           work_style?: string | null
           year_in_school?: string | null
         }
         Update: {
+          academic_major?: string | null
           athlete_archetype?: string | null
+          biggest_career_concern?: string | null
+          career_interest_areas?: string | null
           career_interests?: string | null
+          class_year?: string | null
           confidence_strengths?: string | null
           connection_outside_team?: string | null
           created_at?: string | null
+          division?: string | null
+          dream_role_industry?: string | null
           graduation_year?: number | null
           hardest_emotionally?: string | null
           has_linkedin?: boolean | null
@@ -148,22 +180,29 @@ export type Database = {
           has_resume?: boolean | null
           id?: string
           industry_interests?: string | null
+          instagram_handle?: string | null
           interests_outside_sport?: string | null
+          leadership_roles?: string | null
           linkedin_url?: string | null
           motivation?: string | null
           name?: string | null
           nil_volunteer_description?: string | null
           onboarding_complete?: boolean | null
+          position_role?: string | null
           post_sport_fear?: string | null
+          preferred_communication_style?: string | null
+          pro_career_goal?: string | null
           school?: string | null
           sport?: string | null
           strength_profile?: string | null
           stress_level?: string | null
           structure_without_sport?: string | null
+          success_in_6_months?: string | null
           suggested_career_paths?: string | null
           time_management_style?: string | null
           transition_readiness_score?: number | null
           user_id?: string
+          work_internship_experience?: string | null
           work_style?: string | null
           year_in_school?: string | null
         }
