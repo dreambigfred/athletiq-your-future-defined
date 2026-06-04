@@ -10,7 +10,8 @@ async function callAI(messages: Array<{ role: string; content: string }>, jsonMo
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.LOVABLE_API_KEY}`,
+      "Lovable-API-Key": process.env.LOVABLE_API_KEY ?? "",
+      "X-Lovable-AIG-SDK": "vercel-ai-sdk",
     },
     body: JSON.stringify({
       model: MODEL,
